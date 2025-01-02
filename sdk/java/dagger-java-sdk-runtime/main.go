@@ -12,12 +12,13 @@
 // rest is a long description with more detail on the module's purpose or usage,
 // if appropriate. All modules should have a short description.
 
-package main
+package dagger_java_sdk_runtime
 
 import (
-	"context"
+	"dagger.io/dagger/dag"
+	"encoding/json"
 	"fmt"
-	"github.com/dagger/dagger/sdk/java/dagger-java-sdk/internal/dagger"
+	"main/internal/dagger"
 )
 
 type Java struct{}
