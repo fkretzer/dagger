@@ -63,7 +63,30 @@ func (m *JavaSdk) ModuleRuntime(
 	modSource *dagger.ModuleSource,
 	introspectionJSON *dagger.File,
 ) (*dagger.Container, error) {
-	// We could just move CodegenBase to ModuleRuntime, but keeping them
-	// separate allows for easier future changes.
-	return dag.Container().From("alpine:latest").WithExec([]string{"echo", "Hello, world!"}), nil
+	return dag.Container().
+		From("3-eclipse-temurin-21-alpine").
+		WithEntrypoint([]string{"java", "--version"}), nil
+}
+
+func (t *JavaSdk) Codegen(ctx context.Context, modSource *dagger.ModuleSource, introspectionJSON *dagger.File) (*dagger.GeneratedCode, error) {
+
+	// Get base container without dependencies installed.
+	base := dag.Container().
+		From("3-eclipse-temurin-21-alpine").
+		WithExec([]string{"mvn", "dagger-codegen-maven-plugin:codegen"})
+
+	// Extract codegen directory
+	codegen := dag.
+		Directory().
+		WithDirectory(
+			"/",
+			base.Directory("/asdf"),
+			dagger.DirectoryWithDirectoryOpts{Exclude: []string{"**/node_modules", "**/.pnpm-store"}},
+		)
+
+	return dag.GeneratedCode(
+		codegen,
+	).
+		WithVCSGeneratedPaths([]string{}).
+		WithVCSIgnoredPaths([]string{}), nil
 }
