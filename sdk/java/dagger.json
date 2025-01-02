@@ -1,5 +1,5 @@
 {
-  "name": "java",
+  "name": "java-sdk-with-modules",
   "engineVersion": "v0.15.1",
   "sdk": "go",
   "source": "dagger-java-sdk"
